@@ -71,6 +71,8 @@ public class AppNode extends AllDirectives {
                 materializer
         );
 
+        System.in.read();
+        binding.thenCompose(ServerBinding::unbind).thenAccept(unbound -> system.terminate());
     }
 
     private Route get() {
