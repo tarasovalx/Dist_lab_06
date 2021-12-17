@@ -30,10 +30,18 @@ public class AppWatcher implements Watcher {
         KeeperState keeperState = event.getState();
 
 //        String path = event.getPath();
+
+
         if (Event.KeeperState.SyncConnected == keeperState) {
             try {
                 List<String> list = zk.getChildren(ZK_SERVERS_PATH, this);
                 ArrayList<String> serverData = new ArrayList<>();
+
+                for (String name : list) {
+                    serverData.add(new String(zk.getData(ZK_SERVERS_PATH + '/' + name, this, null)));
+                }
+
+                config.tell(new ServerList(serverData), ActorRef.noSender());
             }
             catch (Exception e){
                 e.printStackTrace();
