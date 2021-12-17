@@ -1,6 +1,7 @@
 package bmstu.ru.anonymizer;
 
 import akka.actor.AbstractActor;
+import akka.japi.pf.ReceiveBuilder;
 
 import java.util.ArrayList;
 import java.util.Random;
@@ -9,7 +10,10 @@ public class CfgStorageActor extends AbstractActor {
     private ArrayList<String> data = new ArrayList<>();
     @Override
     public Receive createReceive() {
-        return null;
+        return ReceiveBuilder.create()
+                .match(ServerRequest.class, this::redirect)
+                .match(ServerList.class, this::saveServerList)
+                .build();
     }
 
     private void saveServerList(ServerList list) {
