@@ -15,6 +15,7 @@ import org.apache.zookeeper.CreateMode;
 import org.apache.zookeeper.KeeperException;
 
 
+import java.io.IOException;
 import java.time.Duration;
 
 public class AppNode extends AllDirectives {
@@ -36,7 +37,7 @@ public class AppNode extends AllDirectives {
         return route(get());
     }
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws IOException{
         port = Integer.parseInt(args[0]);
         system = ActorSystem.create("routes");
 
