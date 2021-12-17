@@ -3,11 +3,17 @@ package bmstu.ru.anonymizer;
 import akka.actor.ActorRef;
 import akka.actor.ActorSystem;
 
+import akka.actor.Props;
 import akka.http.javadsl.Http;
 import akka.http.javadsl.model.HttpRequest;
 import akka.http.javadsl.server.AllDirectives;
 import akka.http.javadsl.server.Route;
 import akka.pattern.Patterns;
+import org.apache.zookeeper.ZooKeeper;
+import org.apache.zookeeper.ZooKeeper;
+import org.apache.zookeeper.CreateMode;
+import org.apache.zookeeper.KeeperException;
+
 
 import java.time.Duration;
 
@@ -33,6 +39,10 @@ public class AppNode extends AllDirectives {
     public static void main(String[] args) {
         port = Integer.parseInt(args[0]);
         system = ActorSystem.create("routes");
+
+        config = system.actorOf(Props.create(CfgStorageActor.class));
+        watcher = new AppWatcher(config);
+        ZooKeeper zoo = new ZooKeeper(ZK_ADDRESS, ZK_TIMEOUT, watcher);
     }
 
     private Route get() {
