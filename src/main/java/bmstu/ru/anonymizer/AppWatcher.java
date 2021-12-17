@@ -23,6 +23,10 @@ public class AppWatcher implements Watcher {
         this.zk = zk;
     }
 
+    public void setZk(ZooKeeper zk) {
+        this.zk = zk;
+    }
+
     public void process(WatchedEvent event) {
         if (event == null) {
             return;

@@ -9,10 +9,8 @@ import akka.http.javadsl.model.HttpRequest;
 import akka.http.javadsl.server.AllDirectives;
 import akka.http.javadsl.server.Route;
 import akka.pattern.Patterns;
+import org.apache.zookeeper.*;
 import org.apache.zookeeper.ZooKeeper;
-import org.apache.zookeeper.ZooKeeper;
-import org.apache.zookeeper.CreateMode;
-import org.apache.zookeeper.KeeperException;
 
 
 import java.io.IOException;
@@ -37,13 +35,20 @@ public class AppNode extends AllDirectives {
         return route(get());
     }
 
-    public static void main(String[] args) throws IOException{
+    public static void main(String[] args) throws IOException, InterruptedException, KeeperException{
         port = Integer.parseInt(args[0]);
         system = ActorSystem.create("routes");
 
         config = system.actorOf(Props.create(CfgStorageActor.class));
         watcher = new AppWatcher(config);
         ZooKeeper zoo = new ZooKeeper(ZK_ADDRESS, ZK_TIMEOUT, watcher);
+
+        watcher.setZk(zoo);
+        zoo.create(ZK_PATH,
+                port.toString().getBytes(),
+                ZooDefs.Ids.OPEN_ACL_UNSAFE ,
+                CreateMode.EPHEMERAL_SEQUENTIAL
+        );
     }
 
     private Route get() {
