@@ -27,13 +27,12 @@ public class AppNode extends AllDirectives {
     private static AppWatcher watcher;
 
     private Route createRoute(ActorSystem system) {
-        return route(
-                get()
-        );
+        return route(get());
     }
 
     public static void main(String[] args) {
-
+        port = Integer.parseInt(args[0]);
+        system = ActorSystem.create("routes");
     }
 
     private Route get() {
