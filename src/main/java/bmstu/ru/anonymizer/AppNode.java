@@ -5,7 +5,9 @@ import akka.actor.ActorRef;
 import akka.actor.ActorSystem;
 
 import akka.actor.Props;
+import akka.http.javadsl.ConnectHttp;
 import akka.http.javadsl.Http;
+import akka.http.javadsl.ServerBinding;
 import akka.http.javadsl.model.HttpRequest;
 import akka.http.javadsl.model.HttpResponse;
 import akka.http.javadsl.server.AllDirectives;
@@ -19,6 +21,7 @@ import org.apache.zookeeper.ZooKeeper;
 
 import java.io.IOException;
 import java.time.Duration;
+import java.util.concurrent.CompletionStage;
 
 public class AppNode extends AllDirectives {
 
@@ -61,6 +64,12 @@ public class AppNode extends AllDirectives {
         AppNode instance = new AppNode();
         final Flow<HttpRequest, HttpResponse, NotUsed> routeFlow;
         routeFlow = instance.createRoute(system).flow(system, materializer);
+
+        final CompletionStage<ServerBinding> binding = http.bindAndHandle(
+                routeFlow,
+                ConnectHttp.toHost(HOSTNAME, port),
+                materializer
+        );
 
     }
 
