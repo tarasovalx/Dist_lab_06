@@ -6,6 +6,9 @@ import org.apache.zookeeper.Watcher;
 import org.apache.zookeeper.ZooKeeper;
 import org.apache.zookeeper.Watcher.Event.KeeperState;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class AppWatcher implements Watcher {
     private final ActorRef config;
     private ZooKeeper zk;
@@ -26,13 +29,14 @@ public class AppWatcher implements Watcher {
         }
         KeeperState keeperState = event.getState();
 
-        String path = event.getPath();
+//        String path = event.getPath();
         if (Event.KeeperState.SyncConnected == keeperState) {
             try {
-
+                List<String> list = zk.getChildren(ZK_SERVERS_PATH, this);
+                ArrayList<String> serverData = new ArrayList<>();
             }
             catch (Exception e){
-
+                e.printStackTrace();
             }
     }
 }
