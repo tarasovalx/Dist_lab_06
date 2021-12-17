@@ -4,6 +4,7 @@ import akka.actor.ActorRef;
 import org.apache.zookeeper.WatchedEvent;
 import org.apache.zookeeper.Watcher;
 import org.apache.zookeeper.ZooKeeper;
+import org.apache.zookeeper.Watcher.Event.KeeperState;
 
 public class AppWatcher implements Watcher {
     private final ActorRef config;
@@ -20,6 +21,18 @@ public class AppWatcher implements Watcher {
     }
 
     public void process(WatchedEvent event) {
+        if (event == null) {
+            return;
+        }
+        KeeperState keeperState = event.getState();
 
+        String path = event.getPath();
+        if (Event.KeeperState.SyncConnected == keeperState) {
+            try {
+
+            }
+            catch (Exception e){
+
+            }
     }
 }
