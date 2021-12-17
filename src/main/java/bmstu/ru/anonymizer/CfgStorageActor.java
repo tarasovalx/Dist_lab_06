@@ -3,8 +3,7 @@ package bmstu.ru.anonymizer;
 import akka.actor.AbstractActor;
 import akka.japi.pf.ReceiveBuilder;
 
-import java.util.ArrayList;
-import java.util.Random;
+import java.util.*;
 
 public class CfgStorageActor extends AbstractActor {
     private ArrayList<String> data = new ArrayList<>();
