@@ -42,9 +42,9 @@ public class AppWatcher implements Watcher {
                 }
 
                 config.tell(new ServerList(serverData), ActorRef.noSender());
-            }
-            catch (Exception e){
+            } catch (Exception e) {
                 e.printStackTrace();
             }
+        }
     }
 }
