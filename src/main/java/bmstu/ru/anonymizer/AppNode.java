@@ -45,23 +45,39 @@ public class AppNode extends AllDirectives {
                                 return completeWithFuture(http.singleRequest(HttpRequest.create(url)));
                             }
 
+                            HttpRequest r = HttpRequest.create(
+                                    String.format("http://localhost:%d/?url=%s&count=%d",
+                                            Integer.parseInt(
+                                                    (String) Patterns
+                                                            .ask(
+                                                                    config,
+                                                                    new ServerRequest(),
+                                                                    Duration.ofMillis(TIMEOUT)
+                                                            )
+                                                            .toCompletableFuture()
+                                                            .join()),
+                                            url,
+                                            counter - 1
+                                    )
+                            );
+
                             return completeWithFuture(
-                                    http.singleRequest(
-                                            HttpRequest.create(
-                                                    String.format("http://localhost:%d/?url=%s&count=%d",
-                                                            Integer.parseInt(
-                                                                    (String) Patterns
-                                                                            .ask(
-                                                                                    config,
-                                                                                    new ServerRequest(),
-                                                                                    Duration.ofMillis(TIMEOUT)
-                                                                            )
-                                                                            .toCompletableFuture()
-                                                                            .join()),
-                                                            url,
-                                                            counter - 1
-                                                    )
-                                            )
+                                    http.singleRequest( r
+//                                            HttpRequest.create(
+//                                                    String.format("http://localhost:%d/?url=%s&count=%d",
+//                                                            Integer.parseInt(
+//                                                                    (String) Patterns
+//                                                                            .ask(
+//                                                                                    config,
+//                                                                                    new ServerRequest(),
+//                                                                                    Duration.ofMillis(TIMEOUT)
+//                                                                            )
+//                                                                            .toCompletableFuture()
+//                                                                            .join()),
+//                                                            url,
+//                                                            counter - 1
+//                                                    )
+//                                            )
                                     )
                             );
                         })
