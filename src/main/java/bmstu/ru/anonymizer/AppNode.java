@@ -1,14 +1,18 @@
 package bmstu.ru.anonymizer;
 
+import akka.NotUsed;
 import akka.actor.ActorRef;
 import akka.actor.ActorSystem;
 
 import akka.actor.Props;
 import akka.http.javadsl.Http;
 import akka.http.javadsl.model.HttpRequest;
+import akka.http.javadsl.model.HttpResponse;
 import akka.http.javadsl.server.AllDirectives;
 import akka.http.javadsl.server.Route;
 import akka.pattern.Patterns;
+import akka.stream.ActorMaterializer;
+import akka.stream.javadsl.Flow;
 import org.apache.zookeeper.*;
 import org.apache.zookeeper.ZooKeeper;
 
@@ -49,6 +53,15 @@ public class AppNode extends AllDirectives {
                 ZooDefs.Ids.OPEN_ACL_UNSAFE ,
                 CreateMode.EPHEMERAL_SEQUENTIAL
         );
+
+
+
+        final Http http = Http.get(system);
+        final ActorMaterializer materializer = ActorMaterializer.create(system);
+        AppNode instance = new AppNode();
+        final Flow<HttpRequest, HttpResponse, NotUsed> routeFlow;
+        routeFlow = instance.createRoute(system).flow(system, materializer);
+
     }
 
     private Route get() {
