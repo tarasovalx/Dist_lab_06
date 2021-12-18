@@ -3,7 +3,6 @@ package bmstu.ru.anonymizer;
 import akka.NotUsed;
 import akka.actor.ActorRef;
 import akka.actor.ActorSystem;
-
 import akka.actor.Props;
 import akka.http.javadsl.ConnectHttp;
 import akka.http.javadsl.Http;
@@ -15,9 +14,10 @@ import akka.http.javadsl.server.Route;
 import akka.pattern.Patterns;
 import akka.stream.ActorMaterializer;
 import akka.stream.javadsl.Flow;
-import org.apache.zookeeper.*;
+import org.apache.zookeeper.CreateMode;
+import org.apache.zookeeper.KeeperException;
+import org.apache.zookeeper.ZooDefs;
 import org.apache.zookeeper.ZooKeeper;
-
 
 import java.io.IOException;
 import java.time.Duration;
@@ -32,6 +32,8 @@ public class AppNode extends AllDirectives {
     private static final int TIMEOUT = 5000;
     private static final String ZK_PATH = "\"/servers/s\"";
 
+    private static final String URL_PARAM_NAME = "url";
+    private static final String CNT_PARAM_NAME = "count";
 
     private static ActorRef config;
     private static Integer port;
@@ -78,8 +80,8 @@ public class AppNode extends AllDirectives {
     }
 
     private Route get() {
-        return parameter("url", url ->
-            parameter("count", count -> {
+        return parameter(URL_PARAM_NAME, url ->
+            parameter(CNT_PARAM_NAME, count -> {
                 int counter = Integer.parseInt(count);
                 final Http http = Http.get(system);
                 if (counter == 0) {
