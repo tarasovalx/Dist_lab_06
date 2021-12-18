@@ -3,10 +3,12 @@ package bmstu.ru.anonymizer;
 import akka.actor.AbstractActor;
 import akka.japi.pf.ReceiveBuilder;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Random;
 
 public class CfgStorageActor extends AbstractActor {
     private ArrayList<String> data = new ArrayList<>();
+
     @Override
     public Receive createReceive() {
         return ReceiveBuilder.create()
@@ -14,6 +16,7 @@ public class CfgStorageActor extends AbstractActor {
                 .match(ServerList.class, this::saveServerList)
                 .build();
     }
+
 
     private void saveServerList(ServerList list) {
         data = new ArrayList<>(list.getData());
