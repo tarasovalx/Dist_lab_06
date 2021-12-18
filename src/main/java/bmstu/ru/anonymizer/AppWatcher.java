@@ -1,6 +1,7 @@
 package bmstu.ru.anonymizer;
 
 import akka.actor.ActorRef;
+import org.apache.zookeeper.KeeperException;
 import org.apache.zookeeper.WatchedEvent;
 import org.apache.zookeeper.Watcher;
 import org.apache.zookeeper.ZooKeeper;
@@ -33,9 +34,6 @@ public class AppWatcher implements Watcher {
         }
         KeeperState keeperState = event.getState();
 
-//        String path = event.getPath();
-
-
         if (Event.KeeperState.SyncConnected == keeperState) {
             try {
                 List<String> list = zk.getChildren(ZK_SERVERS_PATH, this);
@@ -46,7 +44,7 @@ public class AppWatcher implements Watcher {
                 }
 
                 config.tell(new ServerList(serverData), ActorRef.noSender());
-            } catch (Exception e) {
+            } catch (KeeperException | InterruptedException e) {
                 e.printStackTrace();
             }
         }
