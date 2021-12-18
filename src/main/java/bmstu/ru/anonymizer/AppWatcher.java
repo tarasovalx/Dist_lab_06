@@ -4,16 +4,16 @@ import akka.actor.ActorRef;
 import org.apache.zookeeper.KeeperException;
 import org.apache.zookeeper.WatchedEvent;
 import org.apache.zookeeper.Watcher;
-import org.apache.zookeeper.ZooKeeper;
 import org.apache.zookeeper.Watcher.Event.KeeperState;
+import org.apache.zookeeper.ZooKeeper;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class AppWatcher implements Watcher {
+    private static final String ZK_SERVERS_PATH = "/servers";
     private final ActorRef config;
     private ZooKeeper zk;
-    private static final String ZK_SERVERS_PATH = "/servers";
 
     public AppWatcher(ActorRef config) {
         this.config = config;

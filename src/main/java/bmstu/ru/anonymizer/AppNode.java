@@ -40,11 +40,7 @@ public class AppNode extends AllDirectives {
     private static ActorSystem system;
     private static AppWatcher watcher;
 
-    private Route createRoute(ActorSystem system) {
-        return route(get());
-    }
-
-    public static void main(String[] args) throws IOException, InterruptedException, KeeperException{
+    public static void main(String[] args) throws IOException, InterruptedException, KeeperException {
         port = Integer.parseInt(args[0]);
         system = ActorSystem.create("routes");
 
@@ -55,10 +51,9 @@ public class AppNode extends AllDirectives {
         watcher.setZk(zoo);
         zoo.create(ZK_PATH,
                 port.toString().getBytes(),
-                ZooDefs.Ids.OPEN_ACL_UNSAFE ,
+                ZooDefs.Ids.OPEN_ACL_UNSAFE,
                 CreateMode.EPHEMERAL_SEQUENTIAL
         );
-
 
 
         final Http http = Http.get(system);
@@ -73,39 +68,43 @@ public class AppNode extends AllDirectives {
                 materializer
         );
 
-        System.out.println(String.format("Server online at http://%s:%d/\nPress RETURN to stop...",HOSTNAME, port));
+        System.out.println(String.format("Server online at http://%s:%d/\nPress RETURN to stop...", HOSTNAME, port));
 
         System.in.read();
         binding.thenCompose(ServerBinding::unbind).thenAccept(unbound -> system.terminate());
     }
 
+    private Route createRoute(ActorSystem system) {
+        return route(get());
+    }
+
     private Route get() {
         return parameter(URL_PARAM_NAME, url ->
-            parameter(CNT_PARAM_NAME, count -> {
-                int counter = Integer.parseInt(count);
-                final Http http = Http.get(system);
-                if (counter == 0) {
-                    return completeWithFuture(http.singleRequest(HttpRequest.create(url)));
-                }
+                parameter(CNT_PARAM_NAME, count -> {
+                    int counter = Integer.parseInt(count);
+                    final Http http = Http.get(system);
+                    if (counter == 0) {
+                        return completeWithFuture(http.singleRequest(HttpRequest.create(url)));
+                    }
 
-                HttpRequest req = HttpRequest.create(
-                    String.format("http://localhost:%d/?url=%s&count=%d",
-                        Integer.parseInt(
-                            (String) Patterns
-                                    .ask(
-                                            config,
-                                            new ServerRequest(),
-                                            Duration.ofMillis(TIMEOUT)
-                                    )
-                                    .toCompletableFuture()
-                                    .join()),
-                        url,
-                        counter - 1
-                    )
-                );
+                    HttpRequest req = HttpRequest.create(
+                            String.format("http://localhost:%d/?url=%s&count=%d",
+                                    Integer.parseInt(
+                                            (String) Patterns
+                                                    .ask(
+                                                            config,
+                                                            new ServerRequest(),
+                                                            Duration.ofMillis(TIMEOUT)
+                                                    )
+                                                    .toCompletableFuture()
+                                                    .join()),
+                                    url,
+                                    counter - 1
+                            )
+                    );
 
-                return completeWithFuture(http.singleRequest(req));
-            })
+                    return completeWithFuture(http.singleRequest(req));
+                })
         );
     }
 }
