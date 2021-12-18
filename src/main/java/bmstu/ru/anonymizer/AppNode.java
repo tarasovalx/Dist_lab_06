@@ -88,7 +88,7 @@ public class AppNode extends AllDirectives {
                     return completeWithFuture(http.singleRequest(HttpRequest.create(url)));
                 }
 
-                HttpRequest r = HttpRequest.create(
+                HttpRequest req = HttpRequest.create(
                     String.format("http://localhost:%d/?url=%s&count=%d",
                         Integer.parseInt(
                             (String) Patterns
@@ -104,7 +104,7 @@ public class AppNode extends AllDirectives {
                     )
                 );
 
-                return completeWithFuture(http.singleRequest(r));
+                return completeWithFuture(http.singleRequest(req));
             })
         );
     }
