@@ -71,6 +71,8 @@ public class AppNode extends AllDirectives {
                 materializer
         );
 
+        System.out.println(String.format("Server online at http://%s:%d/\nPress RETURN to stop...",HOSTNAME, port));
+
         System.in.read();
         binding.thenCompose(ServerBinding::unbind).thenAccept(unbound -> system.terminate());
     }
